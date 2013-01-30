@@ -2,6 +2,44 @@
 
 @main("Welcome to Play 2.1") {
     
-    @play20.welcome(message)
-    
+    <header class="jumbotron subhead" id="overview">
+        <div class="container">
+            <h1>Hallo Achtung hier Stopp!</h1>
+            <p class="lead">There is a message for you: @message</p>
+        </div>
+    </header>
+    <div class="container">
+        <div class="row">
+            <div class="span9">
+                <section id="dropdowns">
+                    <div class="page-header">
+                        <h1>Dropdown menus</h1>
+                        <div class="pull-left">
+                            <p class="muted">Default</p>
+                            <div class="dropdown clearfix">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdownMenu">Dropdown <b class="caret"></b></a>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                                    <li><a tabindex="-1" href="#">Action</a></li>
+                                    <li><a tabindex="-1" href="#">Another action</a></li>
+                                    <li><a tabindex="-1" href="#">Something else here</a></li>
+                                    <li class="divider"></li>
+                                    <li class="dropdown-submenu">
+                                        <a tabindex="-1" href="#">More options</a>
+                                        <ul class="dropdown-menu">
+                                            <li><a tabindex="-1" href="#">Second level link</a></li>
+                                            <li><a tabindex="-1" href="#">Second level link</a></li>
+                                            <li><a tabindex="-1" href="#">Second level link</a></li>
+                                            <li><a tabindex="-1" href="#">Second level link</a></li>
+                                            <li><a tabindex="-1" href="#">Second level link</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
 }
