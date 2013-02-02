@@ -19,8 +19,8 @@ object ApplicationBuild extends Build {
    */
   def customLessEntryPoints(base: File): PathFinder = {
     val bootstrap= base / "app" / "assets" / "stylesheets" / "bootstrap"
-    (bootstrap / "responsive.less") +++
-    (bootstrap / "bootstrap.less") +++
+    (bootstrap ** "responsive.less") +++
+    (bootstrap ** "bootstrap.less") +++
     (base / "app" / "assets" / "stylesheets" * "*.less")
   }
 
