@@ -20,6 +20,7 @@ import collection.parallel.mutable.ParArray
 import collection.{mutable, parallel}
 import collection.immutable.HashMap
 import util.control.TailCalls.TailRec
+import annotation.tailrec
 
 
 /**
@@ -118,7 +119,7 @@ class HeatMapBuilder(val origin : SpaceCoordinate, val cellDimension : SpaceDime
   def calculateHeatMap(coordinates : List[SpaceCoordinate], maxNumberOfCells : Int = 50) : HeatMap = {
     val mc=MathContext.DECIMAL32
 
-    @TailRec
+    @tailrec
     def sumCounts[T](x : Map[T,Int], y: Map[T,Int]) : Map[T,Int] = {
       if (x.size <= y.size)
         x.toIterable.foldLeft(y){case (map,(idx,count)) =>
@@ -132,7 +133,7 @@ class HeatMapBuilder(val origin : SpaceCoordinate, val cellDimension : SpaceDime
       SpaceCoordinate((lat / cellDimension.latLength).round(mc), (long / cellDimension.longLength).round(mc), None)
     } map { c : SpaceCoordinate =>
       Map( (c, 1) )
-    } reduce (sumCounts _) toSeq) sortBy (- _._2) take maxNumberOfCells map { case (SpaceCoordinate(lat, long, _), count) =>
+    } reduce (sumCounts[SpaceCoordinate] _) toSeq) sortBy (- _._2) take maxNumberOfCells map { case (SpaceCoordinate(lat, long, _), count) =>
       HeatMapCell(lat.toInt, long.toInt, count)
     }
 
