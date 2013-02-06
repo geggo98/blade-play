@@ -12,7 +12,14 @@ import play.api.libs.json.JsString
 import play.api.Play.current
 import akka.util.Timeout
 import scala.concurrent.ExecutionContext.Implicits.global
-
+import org.joda.time.{DateTime, Period, Seconds, Instant}
+import scala.collection.mutable.{HashMap => MutableHashMap}
+import java.math.MathContext
+import collection.parallel.immutable.ParSeq
+import collection.parallel.mutable.ParArray
+import collection.{mutable, parallel}
+import collection.immutable.HashMap
+import util.control.TailCalls.TailRec
 
 
 /**
@@ -48,20 +55,27 @@ object Tracker {
   }
 }
 
+trait MessageToTracker
+case class Join(clientId : String) extends MessageToTracker
 
-case class Join(clientId : String)
-case class ConnectedToTracker(trackerMessages : Enumerator[JsValue])
-case class ConnectionError(msg : String)
+trait ResponseFromTracker
+case class ConnectedToTracker(trackerMessages : Enumerator[JsValue]) extends ResponseFromTracker
+case class ConnectionError(msg : String) extends ResponseFromTracker
 
-case class CreateTicker(tracker : ActorRef)
+case class CreateTicker(tracker : ActorRef)  extends MessageToTracker
 
-case class UpdatePosition(pos : Position, clientId : String)
+case class UpdatePosition(where : SpaceCoordinate, clientId : String) extends MessageToTracker
 
-case class Position(lat : BigInt, long: BigInt, accuracy: Option[BigInt])
+case class SpaceCoordinate(lat : BigDecimal, long: BigDecimal, accuracy: Option[BigDecimal])
 
 
 class Tracker extends Actor {
-  case object Tick
+  case object Tick extends MessageToTracker
+
+  case class SpaceTimeCoordinate(who : String, where : SpaceCoordinate, when : DateTime)
+  val coordinates = new MutableHashMap[String, SpaceTimeCoordinate]
+
+  val coordinatesBestFor = Period.seconds(90)
 
   var myTracker : Option[ActorRef] = None
   var ticker : Option[Cancellable] = None
@@ -83,6 +97,45 @@ class Tracker extends Actor {
       myTracker=Some(tracker)
       setTicker(1 seconds)
     }
+    case UpdatePosition(where, who) => {
+      coordinates.put(who,SpaceTimeCoordinate(who, where, DateTime.now()))
+    }
+
+    case Tick =>
+      val decayTime = DateTime.now().minus(coordinatesBestFor)
+      val tooOld = (coordinates filter (_._2.when.isBefore(decayTime)) map (_._1) toList)
+      coordinates --= tooOld
   }
+
 }
 
+case class SpaceDimension(latLength : BigDecimal, longLength : BigDecimal)
+case class HeatMapCell(latIdx : Int, longIdx : Int, count : Int)
+
+case class HeatMap(origin : SpaceCoordinate, cellDimension : SpaceDimension, cells : List[HeatMapCell])
+
+class HeatMapBuilder(val origin : SpaceCoordinate, val cellDimension : SpaceDimension, val cellsPerDimension : Int) {
+  def calculateHeatMap(coordinates : List[SpaceCoordinate], maxNumberOfCells : Int = 50) : HeatMap = {
+    val mc=MathContext.DECIMAL32
+
+    @TailRec
+    def sumCounts[T](x : Map[T,Int], y: Map[T,Int]) : Map[T,Int] = {
+      if (x.size <= y.size)
+        x.toIterable.foldLeft(y){case (map,(idx,count)) =>
+          map + ((idx, map.getOrElse(idx,0) + count))
+        }
+      else
+        sumCounts(y,x)
+    }
+
+    val heatMapCells=((coordinates.par) map { case SpaceCoordinate(lat,long,_) =>
+      SpaceCoordinate((lat / cellDimension.latLength).round(mc), (long / cellDimension.longLength).round(mc), None)
+    } map { c : SpaceCoordinate =>
+      Map( (c, 1) )
+    } reduce (sumCounts _) toSeq) sortBy (- _._2) take maxNumberOfCells map { case (SpaceCoordinate(lat, long, _), count) =>
+      HeatMapCell(lat.toInt, long.toInt, count)
+    }
+
+    HeatMap(origin, cellDimension, heatMapCells.toList)
+  }
+}
