@@ -7,12 +7,44 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
-            <a class="brand" href="#">Blade  Night App</a>
+            <a class="brand" href="/">Blade  Night App</a>
             <div class="nav-collapse collapse">
                 <ul class="nav">
-                    <li class="active"><a href="#">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/tracker.html">Live Ansicht starten</a></li>
+                    <li class="dropdown">
+                        <a id="dropAdmin" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Admin<b class="caret"></b></a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dropAdmin">
+                            <li><a tabindex="-1" href="/admin/server.html">Server verwalten</a></li>
+                            <li class="divider"></li>
+                            <li><a tabindex="-1" href="/admin/tracks.html">Strecken bearbeiten</a></li>
+                            <li><a tabindex="-1" href="/admin/events.html">Termine bearbeiten</a></li>
+                            <li><a tabindex="-1" href="/admin/users.html">Benutzer bearbeiten</a></li>
+                            <li><a tabindex="-1" href="/admin/messages.html">Nachrichten bearbeiten</a></li>
+                            <li class="divider"></li>
+                            <li><a tabindex="-1" href="/admin/simulator.html">Simulation verwalten</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a id="dropAbout" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">&Uuml;ber<b class="caret"></b></a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dropAbout">
+                            <li><a tabindex="-1" href="/about.html">About</a></li>
+                            <li><a tabindex="-1" href="/about.html#kontakt">Kontakt</a></li>
+                            <li class="divider"></li>
+                            <li><a tabindex="-1" href="/about.html#impressum">Impressum</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav pull-right">
+                    <li class="dropdown">
+                        <a id="dropAccount" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Angemeldet: geggo98<b class="caret"></b></a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dropAccount">
+                            <li><a tabindex="-1" href="/account.html">Meine Daten bearbeiten</a></li>
+                            <li class="divider"></li>
+                            <li><a tabindex="-1" href="/logout.html">Abmelden</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="login.html">Anmelden</a></li>
                 </ul>
             </div><!--/.nav-collapse -->
         </div>

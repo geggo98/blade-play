@@ -1,60 +1,41 @@
 @(message: String)
 
-@main("Welcome to Play 2.1") {
+@main("Übersicht") {
     @mainmenu("test")
-    <header class="jumbotron subhead" id="overview">
-        <div class="container">
-            <h1>Hallo Achtung hier Stopp!</h1>
-            <p class="lead">There is a message for you: @message</p>
-        </div>
-    </header>
     <div class="container">
-        <div class="row">
-            <div class="span9">
-                <div id="navbar-example" class="navbar navbar-static">
-                    <div class="navbar-inner">
-                        <div class="container" style="width: auto;">
-                            <a class="brand" href="#">Project Name</a>
-                            <ul class="nav" role="navigation">
-                                <li class="dropdown">
-                                    <a id="drop1" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-                                    <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
-                                        <li><a tabindex="-1" href="http://google.com">Action</a></li>
-                                        <li><a tabindex="-1" href="#anotherAction">Another action</a></li>
-                                        <li><a tabindex="-1" href="#">Something else here</a></li>
-                                        <li class="divider"></li>
-                                        <li><a tabindex="-1" href="#">Separated link</a></li>
-                                    </ul>
-                                </li>
-                                <li class="dropdown">
-                                    <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">Dropdown 2 <b class="caret"></b></a>
-                                    <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
-                                        <li><a tabindex="-1" href="#">Action</a></li>
-                                        <li><a tabindex="-1" href="#">Another action</a></li>
-                                        <li><a tabindex="-1" href="#">Something else here</a></li>
-                                        <li class="divider"></li>
-                                        <li><a tabindex="-1" href="#">Separated link</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                            <ul class="nav pull-right">
-                                <li id="fat-menu" class="dropdown">
-                                    <a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown">Dropdown 3 <b class="caret"></b></a>
-                                    <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
-                                        <li><a tabindex="-1" href="#">Action</a></li>
-                                        <li><a tabindex="-1" href="#">Another action</a></li>
-                                        <li><a tabindex="-1" href="#">Something else here</a></li>
-                                        <li class="divider"></li>
-                                        <li><a tabindex="-1" href="#">Separated link</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div> <!-- /navbar-example -->
+    <!-- Main hero unit for a primary marketing message or call to action -->
+        <div class="hero-unit">
+            <h1>Blade Night live Ansicht</h1>
+            <p>Text der beschreibt, dass man hiermit die Bladenight beobachten kann</p>
+            <p><a class="btn btn-primary btn-large">Live Ansicht starten &raquo;</a></p>
+        </div>
 
+    <!-- Example row of columns -->
+        <div class="row">
+            <div class="span4">
+                <h2>Wetter-Entscheidung</h2>
+                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+                <p><a class="btn" href="#">View details &raquo;</a></p>
+            </div>
+            <div class="span4">
+                <h2>Sponsor 1</h2>
+                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+                <p><a class="btn" href="#">View details &raquo;</a></p>
+            </div>
+            <div class="span4">
+                <h2>Sponsor 2</h2>
+                <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+                <p><a class="btn" href="#">View details &raquo;</a></p>
             </div>
         </div>
-    </div>
+
+        <hr>
+
+        <footer>
+            <p>&copy; Stefan Schwetschke 2013</p>
+        </footer>
+
+    </div> <!-- /container -->
+
 
 }
