@@ -12,15 +12,10 @@ import play.api.libs.json.JsString
 import play.api.Play.current
 import akka.util.Timeout
 import scala.concurrent.ExecutionContext.Implicits.global
-import org.joda.time.{DateTime, Period, Seconds, Instant}
-import scala.collection.mutable.{HashMap => MutableHashMap}
+import org.joda.time.{DateTime, Period}
 import java.math.MathContext
-import collection.parallel.immutable.ParSeq
-import collection.parallel.mutable.ParArray
-import collection.{mutable, parallel}
-import collection.immutable.HashMap
-import util.control.TailCalls.TailRec
 import annotation.tailrec
+import scala.collection.mutable
 
 
 /**
@@ -74,7 +69,7 @@ case class SpaceTimeCoordinate(who : String, where : SpaceCoordinate, when : Dat
 class Tracker extends Actor {
   case object Tick extends MessageToTracker
 
-  val coordinates = new MutableHashMap[String, SpaceTimeCoordinate]
+  val coordinates : mutable.HashMap[String, SpaceTimeCoordinate] = mutable.HashMap.empty
 
   val coordinatesExpireAfter = Period.seconds(90)
 
