@@ -119,7 +119,7 @@ class Tracker extends Actor {
 
 case class SpaceDimension(latLength : BigDecimal, longLength : BigDecimal)
 case class MapCell(latIdx : Int, longIdx : Int)
-case class HeatMapCell(override val latIdx : Int, override val longIdx : Int, count : Int) extends MapCell(latIdx,longIdx)
+case class HeatMapCell(cell : MapCell, count : Int)
 
 case class HeatMap(origin : SpaceCoordinate, cellDimension : SpaceDimension, cells : List[HeatMapCell])
 
@@ -141,7 +141,7 @@ class HeatMapBuilder(val origin : SpaceCoordinate, val cellDimension : SpaceDime
     } map { c : MapCell =>
       Map( (c, 1) )
     } reduce (sumCounts[MapCell] _) toSeq) sortBy (countDesc _) take maxNumberOfCells map {
-      case (MapCell(lat, long), count) => HeatMapCell(lat, long, count)
+      case (cell, count) => HeatMapCell(cell, count)
     }
 
     HeatMap(origin, cellDimension, heatMapCells.toList)
