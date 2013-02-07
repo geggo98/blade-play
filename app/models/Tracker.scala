@@ -68,18 +68,21 @@ case class CreateTicker(tracker : ActorRef)  extends MessageToTracker
 case class UpdatePosition(where : SpaceCoordinate, clientId : String) extends MessageToTracker
 
 case class SpaceCoordinate(lat : BigDecimal, long: BigDecimal, accuracy: Option[BigDecimal])
+case class SpaceTimeCoordinate(who : String, where : SpaceCoordinate, when : DateTime)
 
 
 class Tracker extends Actor {
   case object Tick extends MessageToTracker
 
-  case class SpaceTimeCoordinate(who : String, where : SpaceCoordinate, when : DateTime)
   val coordinates = new MutableHashMap[String, SpaceTimeCoordinate]
 
-  val coordinatesBestFor = Period.seconds(90)
+  val coordinatesExpireAfter = Period.seconds(90)
 
   var myTracker : Option[ActorRef] = None
   var ticker : Option[Cancellable] = None
+
+  var heatMapBuilder=new HeatMapBuilder(SpaceCoordinate(1,2,None),SpaceDimension(10,20),100)
+  var maxCellsInHeatMap=50
 
   val (enumerator, channel) = Concurrent.broadcast[JsValue]
 
@@ -103,38 +106,42 @@ class Tracker extends Actor {
     }
 
     case Tick =>
-      val decayTime = DateTime.now().minus(coordinatesBestFor)
-      val tooOld = (coordinates filter (_._2.when.isBefore(decayTime)) map (_._1) toList)
-      coordinates --= tooOld
+      val expireTime = DateTime.now().minus(coordinatesExpireAfter)
+      val expiredCoordinates = (coordinates filter (_._2.when.isBefore(expireTime)) map (_._1) toList)
+      coordinates --= expiredCoordinates
+      scala.concurrent.future{
+        heatMapBuilder.calculateHeatMap(coordinates.values,maxCellsInHeatMap)
+
+      }
   }
 
 }
 
 case class SpaceDimension(latLength : BigDecimal, longLength : BigDecimal)
-case class HeatMapCell(latIdx : Int, longIdx : Int, count : Int)
+case class MapCell(latIdx : Int, longIdx : Int)
+case class HeatMapCell(override val latIdx : Int, override val longIdx : Int, count : Int) extends MapCell(latIdx,longIdx)
 
 case class HeatMap(origin : SpaceCoordinate, cellDimension : SpaceDimension, cells : List[HeatMapCell])
 
 class HeatMapBuilder(val origin : SpaceCoordinate, val cellDimension : SpaceDimension, val cellsPerDimension : Int) {
-  def calculateHeatMap(coordinates : List[SpaceCoordinate], maxNumberOfCells : Int = 50) : HeatMap = {
+  def calculateHeatMap(coordinates : Iterable[SpaceTimeCoordinate], maxNumberOfCells : Int = 50) : HeatMap = {
     val mc=MathContext.DECIMAL32
 
     @tailrec
     def sumCounts[T](x : Map[T,Int], y: Map[T,Int]) : Map[T,Int] = {
       if (x.size <= y.size)
-        x.toIterable.foldLeft(y){case (map,(idx,count)) =>
-          map + ((idx, map.getOrElse(idx,0) + count))
-        }
+        y ++ ( x map {case (idx, count) => (idx, x.getOrElse(idx,0) + count)} )
       else
         sumCounts(y,x)
     }
+    def countDesc(x : (_,Int)) : Int = - x._2
 
-    val heatMapCells=((coordinates.par) map { case SpaceCoordinate(lat,long,_) =>
-      SpaceCoordinate((lat / cellDimension.latLength).round(mc), (long / cellDimension.longLength).round(mc), None)
-    } map { c : SpaceCoordinate =>
+    val heatMapCells=((coordinates par) map { case SpaceTimeCoordinate(_,SpaceCoordinate(lat,long,_),_) =>
+      MapCell((lat / cellDimension.latLength).round(mc).toInt, (long / cellDimension.longLength).round(mc).toInt)
+    } map { c : MapCell =>
       Map( (c, 1) )
-    } reduce (sumCounts[SpaceCoordinate] _) toSeq) sortBy (- _._2) take maxNumberOfCells map { case (SpaceCoordinate(lat, long, _), count) =>
-      HeatMapCell(lat.toInt, long.toInt, count)
+    } reduce (sumCounts[MapCell] _) toSeq) sortBy (countDesc _) take maxNumberOfCells map {
+      case (MapCell(lat, long), count) => HeatMapCell(lat, long, count)
     }
 
     HeatMap(origin, cellDimension, heatMapCells.toList)
