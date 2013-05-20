@@ -1,0 +1,15 @@
+@()(implicit flash: Flash)
+@flash.get("error").map { errorMessage =>
+
+    <div class="alert alert-error">
+        <a href="#" class="close" data-dismiss="alert">&times;</a>
+        <strong>Fehler!</strong> @errorMessage
+    </div>
+}
+
+<div id="onError" class="alert alert-error" style="display:none">
+    <a href="#" class="close" data-dismiss="alert">&times;</a>
+    <strong>Fehler!</strong> <span></span>
+</div>
+<!-- Code to toggle error message is in assets/javascripts/error_message.js -->
+

@@ -18,6 +18,7 @@ import play.api.libs.json.JsString
 import scala.Some
 import play.api.libs.json.JsNumber
 import play.api.libs.json.JsObject
+import play.api.mvc.AnyContent
 
 
 /**
@@ -45,12 +46,14 @@ object Tracker {
   private def errorOutput(msg : String) =
     Enumerator[JsValue](JsObject(Seq("error" -> JsString(msg)))).andThen(Enumerator.enumInput(Input.EOF))
 
-  def join(clientId : String) : Future[(Iteratee[JsValue,_], Enumerator[JsValue])] = {
+  def join(clientId : String) : Future[(Iteratee[JsValue,_],Enumerator[JsValue])] = {
     (defaultTracker ? Join(clientId)) map {
       case ConnectedToTracker(enumerator) => (jsonInputParser(clientId),enumerator)
       case ConnectionError(msg) => (emptyInputParser, errorOutput(msg))
     }
   }
+
+  def answerSingleRequest(data : AnyContent) : String = "callbackName(hereComesThejsoncontent)"
 }
 
 trait MessageToTracker

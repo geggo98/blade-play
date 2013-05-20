@@ -1,13 +1,12 @@
-@(message: String)
+@(message: String)(implicit flash: Flash)
 
-@main("Übersicht") {
-    @mainmenu("test")
+@fragments.main("Übersicht") {
     <div class="container">
     <!-- Main hero unit for a primary marketing message or call to action -->
         <div class="hero-unit">
             <h1>Blade Night live Ansicht</h1>
             <p>Text der beschreibt, dass man hiermit die Bladenight beobachten kann</p>
-            <p><a class="btn btn-primary btn-large">Live Ansicht starten &raquo;</a></p>
+            <p><a class="btn btn-primary btn-large" href="/tracker.html">Live Ansicht starten &raquo;</a></p>
         </div>
 
     <!-- Example row of columns -->
@@ -28,14 +27,7 @@
                 <p><a class="btn" href="#">View details &raquo;</a></p>
             </div>
         </div>
-
-        <hr>
-
-        <footer>
-            <p>&copy; Stefan Schwetschke 2013</p>
-        </footer>
-
     </div> <!-- /container -->
-
-
+}{
+    @Html.empty
 }

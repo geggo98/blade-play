@@ -76,9 +76,9 @@
 
       if (!self.options.delay || !self.options.delay.show) return self.show()
 
-      clearTimeout(this.timeout)
+      clearTimeout(this.interval_ms)
       self.hoverState = 'in'
-      this.timeout = setTimeout(function() {
+      this.interval_ms = setTimeout(function() {
         if (self.hoverState == 'in') self.show()
       }, self.options.delay.show)
     }
@@ -86,11 +86,11 @@
   , leave: function (e) {
       var self = $(e.currentTarget)[this.type](this._options).data(this.type)
 
-      if (this.timeout) clearTimeout(this.timeout)
+      if (this.interval_ms) clearTimeout(this.interval_ms)
       if (!self.options.delay || !self.options.delay.hide) return self.hide()
 
       self.hoverState = 'out'
-      this.timeout = setTimeout(function() {
+      this.interval_ms = setTimeout(function() {
         if (self.hoverState == 'out') self.hide()
       }, self.options.delay.hide)
     }

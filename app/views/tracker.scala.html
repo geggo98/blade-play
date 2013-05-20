@@ -1,0 +1,37 @@
+@()(implicit request: RequestHeader, flash: Flash)
+@fragments.main("Live Ansicht") {
+    <div class="container">
+            <!-- Main hero unit for a primary marketing message or call to action -->
+            <!-- Example row of columns -->
+        <div class="jumbotron">
+            <p class="lead">An der Blade Night teilnehmen
+                <a class="btn btn-large btn-success" id="start_gps"  href="#">Meine GPS-Position &uuml;bertragen</a>
+            </p>
+        </div>
+        <div class="row">
+            <div class="span8">
+                <div style="display: inline-block; position: relative; width: 100%;">
+                    <div style="padding-top: 100%;"></div>
+                    <div style=" position: absolute; top: 0; bottom: 0; left: 0; right: 0;" id="map_canvas">
+                    </div>
+                </div>
+            </div>
+            <div class="span4">
+                <h2>Steuerung</h2>
+                <ol>
+                    <li>Hi-Res / Low-Res</li>
+                    <li>Freunde finden</li>
+                    <li>GPS an / aus</li>
+                    <li>Karte zentrieren</li>
+                </ol>
+                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+            </div>
+        </div>
+    </div> <!-- /container -->
+}{
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.0&amp;key=AIzaSyBWtXQjWm_XZSM-MHHcHbvOS4-eomeNqPc&amp;sensor=true"></script>
+    <script src="@routes.Assets.at("javascripts/tracker.js")"  language="javascript" type="text/javascript"></script>
+    <script language="javascript">
+            "@routes.Application.trackerSocket().webSocketURL()"
+    </script>
+}
